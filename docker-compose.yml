@@ -42,7 +42,7 @@ services:
       - db-server:db-server
     environment:
       PMA_HOST: db-server
-      MYSQL_USER: wpdatabase
+      MYSQL_USER: wp-user
       MYSQL_PASSWORD: wp-password
       MYSQL_ROOT_PASSWORD: toor
     restart: always   
