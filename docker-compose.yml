@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  www:
+    image: wordpress
+    ports:
+      - "80:80"
+    volumes:
+      - ./php/configuration/php.ini:/usr/local/etc/php/php.ini:rw
+      - ./php/www:/var/www/html/
+    depends_on:
+      - db-server
+    networks:
+      - default
+    environment:
+      APACHE_SERVER_NAME: localhost
+    restart: always
+
+  db-server:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: wpdatabase  
+      MYSQL_USER: wp-user 
+      MYSQL_PASSWORD: wp-password
+      MYSQL_ROOT_PASSWORD: toor
+    volumes:
+      - ./mysql/dump/:/var/lib/mysql
+    user: "1000:1000"
+    ports:
+      - "3306:3306"
+    networks:
+      - default
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db-server
+    ports:
+      - 8080:80
+    links:
+      - db-server:db-server
+    environment:
+      PMA_HOST: db-server
+      MYSQL_USER: wpdatabase
+      MYSQL_PASSWORD: wp-password
+      MYSQL_ROOT_PASSWORD: toor
+    restart: always   
+    networks:
+      - default
+
+networks:
+  default:
